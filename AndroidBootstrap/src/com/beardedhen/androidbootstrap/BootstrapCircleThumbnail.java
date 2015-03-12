@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.utils.ImageDownLoader;
 import com.beardedhen.androidbootstrap.utils.ImageUtils;
 
 public class BootstrapCircleThumbnail extends FrameLayout
@@ -199,6 +200,64 @@ public class BootstrapCircleThumbnail extends FrameLayout
 
         requestLayout();
         invalidate();
+    }
+    
+    public void setImageFromUrl(String url, Bitmap defaultImg) {
+    	ImageDownLoader loader = new ImageDownLoader(this.getContext());
+        Bitmap bitmap = loader.getBitmapCache(url);
+        if (bitmap != null) {
+        	setImage(bitmap);
+        } else {
+        	setImage(defaultImg);
+        	
+        	if (loader.getTaskCollection().containsKey(url)) {
+                return;
+            }
+        	
+        	loader.loadImage(url, this.getWidth(),
+                    this.getHeight(),
+                    new ImageDownLoader.AsyncImageLoaderListener() {
+
+                        @Override
+                        public void onImageLoader(Bitmap bitmap) {
+                            if (this != null && bitmap != null) {
+                            	setImage(bitmap);
+                            }
+                        }
+
+                    });
+        }
+
+    	
+    }
+    
+    public void setImageFromUrl(String url) {
+    	ImageDownLoader loader = new ImageDownLoader(this.getContext());
+        Bitmap bitmap = loader.getBitmapCache(url);
+        if (bitmap != null) {
+        	setImage(bitmap);
+        } else {
+       
+        	
+        	if (loader.getTaskCollection().containsKey(url)) {
+                return;
+            }
+        	
+        	loader.loadImage(url, this.getWidth(),
+                    this.getHeight(),
+                    new ImageDownLoader.AsyncImageLoaderListener() {
+
+                        @Override
+                        public void onImageLoader(Bitmap bitmap) {
+                            if (this != null && bitmap != null) {
+                            	setImage(bitmap);
+                            }
+                        }
+
+                    });
+        }
+
+    	
     }
 
 }
