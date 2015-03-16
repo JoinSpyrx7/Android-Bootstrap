@@ -11,6 +11,7 @@ import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -96,11 +97,12 @@ public class ImageDownLoader {
      */
     public void loadImage(final String url, final int width, final int height,
             AsyncImageLoaderListener listener) {
-        Log.i(ImageDownLoader_Log, "download:" + url);
+        Log.i(ImageDownLoader_Log, "loadImage:" + url);
         final ImageHandler handler = new ImageHandler(listener);
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
+                Log.i(ImageDownLoader_Log, "loadImage run:" + url);
                 Bitmap bitmap = downloadImage(url, width, height);
                 Message msg = handler.obtainMessage();
                 msg.obj = bitmap;
@@ -163,8 +165,8 @@ public class ImageDownLoader {
         try {
             httpClient.getParams().setParameter(
                     CoreProtocolPNames.PROTOCOL_VERSION, HttpVersion.HTTP_1_1);
-            HttpPost httpPost = new HttpPost(url);
-            HttpResponse httpResponse = httpClient.execute(httpPost);
+            HttpGet httpGet = new HttpGet(url);
+            HttpResponse httpResponse = httpClient.execute(httpGet);
             if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 HttpEntity entity = httpResponse.getEntity();
                 //解决缩放大图时出现SkImageDecoder::Factory returned null错误
@@ -173,14 +175,15 @@ public class ImageDownLoader {
                 bmpFactoryOptions.inJustDecodeBounds = true;
                 BitmapFactory.decodeByteArray(byteIn, 0, byteIn.length,
                         bmpFactoryOptions);
-                int heightRatio = (int) Math.ceil(bmpFactoryOptions.outHeight
+                Log.d("ImageDownLoader", "downloadImage:"+bmpFactoryOptions.outHeight+"|"+height+"|"+bmpFactoryOptions.outWidth+"|"+width);
+                /*int heightRatio = (int) Math.ceil(bmpFactoryOptions.outHeight
                         / height);
                 int widthRatio = (int) Math.ceil(bmpFactoryOptions.outWidth
                         / width);
                 if (heightRatio > 1 && widthRatio > 1) {
                     bmpFactoryOptions.inSampleSize = heightRatio > widthRatio ? heightRatio
                             : widthRatio;
-                }
+                }*/
                 bmpFactoryOptions.inJustDecodeBounds = false;
                 bitmap = BitmapFactory.decodeByteArray(byteIn, 0,
                         byteIn.length, bmpFactoryOptions);

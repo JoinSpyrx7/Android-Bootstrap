@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -203,6 +204,7 @@ public class BootstrapCircleThumbnail extends FrameLayout
     }
     
     public void setImageFromUrl(String url, Bitmap defaultImg) {
+    	
     	ImageDownLoader loader = new ImageDownLoader(this.getContext());
         Bitmap bitmap = loader.getBitmapCache(url);
         if (bitmap != null) {
@@ -227,11 +229,10 @@ public class BootstrapCircleThumbnail extends FrameLayout
 
                     });
         }
-
-    	
     }
     
     public void setImageFromUrl(String url) {
+    	Log.d("BS", "setImageFromUrl:"+url);
     	ImageDownLoader loader = new ImageDownLoader(this.getContext());
         Bitmap bitmap = loader.getBitmapCache(url);
         if (bitmap != null) {

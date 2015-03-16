@@ -124,6 +124,7 @@ public class Utils {
      * @throws IOException
      */
     public static void savaBitmap(File dir, String fileName, Bitmap bitmap) {
+    	Log.d("Utils", "savaBitmap:"+dir+fileName+"|"+bitmap);
         if (bitmap == null) {
             return;
         }
@@ -135,6 +136,7 @@ public class Utils {
             fos.flush();
             fos.close();
         } catch (IOException e) {
+        	Log.d("Utils", "savaBitmap IOException:"+e.getMessage());
             e.printStackTrace();
         }
     }
